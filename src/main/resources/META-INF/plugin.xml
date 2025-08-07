@@ -22,11 +22,15 @@
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.modules.vcs</depends>
-    <depends>Git4Idea</depends>
 
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
         <postStartupActivity implementation="clocklytic.clocklyticplugin.ClocklyticPlugin"/>
+        <applicationConfigurable instance="clocklytic.clocklyticplugin.ClocklyticConfigurable"
+                                id="clocklytic.settings"
+                                displayName="Clocklytic Time Tracker"/>
+        <applicationService serviceImplementation="clocklytic.clocklyticplugin.ClocklyticSettings"/>
+        <projectService serviceImplementation="clocklytic.clocklyticplugin.TimeTrackerDisposable"/>
     </extensions>
 </idea-plugin>
