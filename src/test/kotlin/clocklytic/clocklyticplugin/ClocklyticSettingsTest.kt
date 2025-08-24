@@ -16,7 +16,7 @@ class ClocklyticSettingsTest {
     @Test
     fun testDefaultSettings() {
         assertEquals("Default API base URL should be localhost",
-            "http://localhost:8081", settings.apiBaseUrl)
+            "http://localhost:8086", settings.apiBaseUrl)
         assertEquals("Default API key should be empty", "", settings.apiKey)
         assertEquals("Default tracking interval should be 15 minutes",
             15, settings.trackingIntervalMinutes)

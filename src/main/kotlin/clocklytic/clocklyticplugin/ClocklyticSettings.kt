@@ -14,7 +14,7 @@ import com.intellij.util.xmlb.XmlSerializerUtil
 @Service
 class ClocklyticSettings : PersistentStateComponent<ClocklyticSettings> {
 
-    var apiBaseUrl: String = "http://localhost:8081"
+    var apiBaseUrl: String = "http://localhost:8086"
     var apiKey: String = ""
     var userId: Long? = null
     var projectId: Long? = null
