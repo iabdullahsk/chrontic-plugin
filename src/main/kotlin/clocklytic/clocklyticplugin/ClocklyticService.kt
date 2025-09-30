@@ -82,9 +82,9 @@ class ClocklyticService {
             logger.info("Creating time entry with description: $description")
 
             val request = HttpRequest.newBuilder()
-                .uri(URI.create("${settings.apiBaseUrl}/api/time-entries"))
+                .uri(URI.create("${settings.apiBaseUrl}/api/time-entries/plugin"))
                 .header("Content-Type", "application/json")
-                .header("Authorization", "Bearer ${settings.apiKey}")
+                .header("X-API-Key", settings.apiKey)
                 .timeout(Duration.ofSeconds(30))
                 .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                 .build()
