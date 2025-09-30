@@ -32,7 +32,7 @@ class ClocklyticPlugin : ProjectActivity {
         val gitService = GitService(project)
         val clocklyticService = ClocklyticService()
         val activityDetector = ActivityDetector(project)
-        val timeTracker = TimeTracker(gitService, clocklyticService, activityDetector)
+        val timeTracker = TimeTracker(gitService, clocklyticService, activityDetector, project.name)
 
         // Test git service immediately
         val currentTicket = gitService.getCurrentJiraTicket()

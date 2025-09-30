@@ -7,7 +7,8 @@ import java.time.temporal.ChronoUnit
 class TimeTracker(
     private val gitService: GitService,
     private val clocklyticService: ClocklyticService,
-    private val activityDetector: ActivityDetector
+    private val activityDetector: ActivityDetector,
+    private val projectName: String
 ) {
     private val logger = Logger.getInstance(TimeTracker::class.java)
     private var lastJiraTicket: String? = null
@@ -47,7 +48,7 @@ class TimeTracker(
         if (durationMinutes >= 1) { // Only track if at least 1 minute has passed
             logger.info("Attempting to track $durationMinutes minutes for: $trackingKey (Last activity: ${activityDetector.getMinutesSinceLastActivity()} minutes ago)")
 
-            val success = clocklyticService.createTimeEntry(currentJiraTicket, currentBranchName, durationMinutes.toInt())
+            val success = clocklyticService.createTimeEntry(currentJiraTicket, currentBranchName, projectName, durationMinutes.toInt())
 
             if (success) {
                 lastTrackingTime = currentTime

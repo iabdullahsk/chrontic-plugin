@@ -14,8 +14,6 @@ import java.time.format.DateTimeFormatter
 
 @Serializable
 data class TimeEntryRequest(
-    val userId: Long,
-    val projectId: Long,
     @Serializable(with = LocalDateTimeSerializer::class)
     val startTime: LocalDateTime,
     @Serializable(with = LocalDateTimeSerializer::class)
@@ -49,29 +47,25 @@ class ClocklyticService {
         encodeDefaults = true
     }
 
-    fun createTimeEntry(jiraTicket: String?, branchName: String?, durationMinutes: Int): Boolean {
+    fun createTimeEntry(jiraTicket: String?, branchName: String?, projectName: String, durationMinutes: Int): Boolean {
         if (settings.apiKey.isBlank()) {
             logger.warn("API key not configured. Please configure the plugin settings.")
             return false
         }
 
         try {
-            val userId = settings.userId ?: throw IllegalArgumentException("User ID not configured. Please configure the plugin settings.")
-            val projectId = settings.projectId ?: throw IllegalArgumentException("Project ID not configured. Please configure the plugin settings.")
-
             val startTime = LocalDateTime.now().minusMinutes(durationMinutes.toLong())
             val endTime = LocalDateTime.now()
 
             // Create description based on available information
+            // If using branch name, prefix it with project name
             val description = when {
                 !jiraTicket.isNullOrBlank() -> jiraTicket
-                !branchName.isNullOrBlank() -> branchName
+                !branchName.isNullOrBlank() -> "${projectName}_$branchName"
                 else -> "Auto-tracked via IntelliJ plugin: branch name could not be determined"
             }
 
             val timeEntry = TimeEntryRequest(
-                userId = userId,
-                projectId = projectId,
                 startTime = startTime,
                 endTime = endTime,
                 hoursWorked = durationMinutes.toDouble() / 60.0,

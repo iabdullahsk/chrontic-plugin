@@ -16,8 +16,6 @@ class ClocklyticSettings : PersistentStateComponent<ClocklyticSettings> {
 
     var apiBaseUrl: String = "http://localhost:8086"
     var apiKey: String = ""
-    var userId: Long? = null
-    var projectId: Long? = null
     var trackingIntervalMinutes: Int = 15
     var activityTimeoutMinutes: Int = 5
     var enableAutoTracking: Boolean = true

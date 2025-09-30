@@ -18,8 +18,6 @@ class ClocklyticConfigurable : Configurable {
 
     private val apiBaseUrlField = JBTextField(settings.apiBaseUrl, 30)
     private val apiKeyField = JBPasswordField()
-    private val userIdField = JBTextField(settings.userId?.toString() ?: "", 20)
-    private val projectIdField = JBTextField(settings.projectId?.toString() ?: "", 20)
     private val trackingIntervalSpinner = JSpinner(SpinnerNumberModel(settings.trackingIntervalMinutes, 1, 60, 1))
     private val enableAutoTrackingCheckbox = JBCheckBox("Enable automatic time tracking", settings.enableAutoTracking)
     private val jiraRegexField = JBTextField(settings.jiraTicketRegex, 30)
@@ -36,10 +34,6 @@ class ClocklyticConfigurable : Configurable {
             .addTooltip("The base URL of your Clocklytic API (e.g., http://localhost:8080)")
             .addLabeledComponent("API Key:", apiKeyField)
             .addTooltip("Your Clocklytic API authentication key")
-            .addLabeledComponent("User ID:", userIdField)
-            .addTooltip("Your user ID in the Clocklytic system")
-            .addLabeledComponent("Project ID:", projectIdField)
-            .addTooltip("The project ID for time entries")
             .addLabeledComponent("Tracking Interval (minutes):", trackingIntervalSpinner)
             .addTooltip("How often to send time entries (1-60 minutes)")
             .addComponent(enableAutoTrackingCheckbox)
@@ -55,8 +49,6 @@ class ClocklyticConfigurable : Configurable {
     override fun isModified(): Boolean {
         return apiBaseUrlField.text != settings.apiBaseUrl ||
                 String(apiKeyField.password) != settings.apiKey ||
-                userIdField.text != (settings.userId?.toString() ?: "") ||
-                projectIdField.text != (settings.projectId?.toString() ?: "") ||
                 trackingIntervalSpinner.value != settings.trackingIntervalMinutes ||
                 enableAutoTrackingCheckbox.isSelected != settings.enableAutoTracking ||
                 jiraRegexField.text != settings.jiraTicketRegex
@@ -65,8 +57,6 @@ class ClocklyticConfigurable : Configurable {
     override fun apply() {
         settings.apiBaseUrl = apiBaseUrlField.text.trim()
         settings.apiKey = String(apiKeyField.password)
-        settings.userId = userIdField.text.trim().toLongOrNull()
-        settings.projectId = projectIdField.text.trim().toLongOrNull()
         settings.trackingIntervalMinutes = trackingIntervalSpinner.value as Int
         settings.enableAutoTracking = enableAutoTrackingCheckbox.isSelected
         settings.jiraTicketRegex = jiraRegexField.text.trim()
@@ -75,8 +65,6 @@ class ClocklyticConfigurable : Configurable {
     override fun reset() {
         apiBaseUrlField.text = settings.apiBaseUrl
         apiKeyField.text = settings.apiKey
-        userIdField.text = settings.userId?.toString() ?: ""
-        projectIdField.text = settings.projectId?.toString() ?: ""
         trackingIntervalSpinner.value = settings.trackingIntervalMinutes
         enableAutoTrackingCheckbox.isSelected = settings.enableAutoTracking
         jiraRegexField.text = settings.jiraTicketRegex

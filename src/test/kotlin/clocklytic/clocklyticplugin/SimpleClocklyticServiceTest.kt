@@ -12,16 +12,12 @@ class SimpleClocklyticServiceTest {
         val endTime = java.time.LocalDateTime.of(2025, 8, 7, 10, 15, 0)
 
         val timeEntry = TimeEntryRequest(
-            userId = 123L,
-            projectId = 456L,
             startTime = startTime,
             endTime = endTime,
             hoursWorked = 0.25,
             description = "PROJ-123"
         )
 
-        assertEquals(123L, timeEntry.userId)
-        assertEquals(456L, timeEntry.projectId)
         assertEquals(startTime, timeEntry.startTime)
         assertEquals(endTime, timeEntry.endTime)
         assertEquals(0.25, timeEntry.hoursWorked, 0.001)
@@ -69,21 +65,17 @@ class SimpleClocklyticServiceTest {
 
     @Test
     fun testNewTimeEntryRequestFormat() {
-        // Test the new backend format with userId, projectId, LocalDateTime, hoursWorked
+        // Test the new backend format with LocalDateTime and hoursWorked
         val startTime = java.time.LocalDateTime.of(2025, 8, 7, 10, 0, 0)
         val endTime = java.time.LocalDateTime.of(2025, 8, 7, 10, 15, 0)
 
         val timeEntry = TimeEntryRequest(
-            userId = 123L,
-            projectId = 456L,
             startTime = startTime,
             endTime = endTime,
             hoursWorked = 0.25,
             description = "PROJ-123"
         )
 
-        assertEquals(123L, timeEntry.userId)
-        assertEquals(456L, timeEntry.projectId)
         assertEquals(startTime, timeEntry.startTime)
         assertEquals(endTime, timeEntry.endTime)
         assertEquals(0.25, timeEntry.hoursWorked, 0.001)
@@ -93,30 +85,30 @@ class SimpleClocklyticServiceTest {
     @Test
     fun testDescriptionGeneration_JiraTicketPresent() {
         // Test description when JIRA ticket is available - should use just the ticket
-        val description = generateDescription("PROJ-123", "feature/PROJ-123-new-feature")
+        val description = generateDescription("PROJ-123", "feature/PROJ-123-new-feature", "MyProject")
         assertEquals("PROJ-123", description)
     }
 
     @Test
     fun testDescriptionGeneration_OnlyBranchName() {
-        // Test description when only branch name is available
-        val description = generateDescription(null, "feature/add-user-authentication")
-        assertEquals("feature/add-user-authentication", description)
+        // Test description when only branch name is available - should prefix with project name
+        val description = generateDescription(null, "feature/add-user-authentication", "MyProject")
+        assertEquals("MyProject_feature/add-user-authentication", description)
     }
 
     @Test
     fun testDescriptionGeneration_BranchWithMissingKeyword() {
-        // Test description with branch containing "missing" - should work fine
-        val description = generateDescription(null, "branch_name_missing")
-        assertEquals("branch_name_missing", description)
+        // Test description with branch containing "missing" - should work fine with project prefix
+        val description = generateDescription(null, "branch_name_missing", "TestProject")
+        assertEquals("TestProject_branch_name_missing", description)
     }
 
     @Test
     fun testDescriptionGeneration_EmptyValues() {
         // Test description with empty/null values
-        assertEquals("Auto-tracked via IntelliJ plugin", generateDescription(null, null))
-        assertEquals("Auto-tracked via IntelliJ plugin", generateDescription("", ""))
-        assertEquals("Auto-tracked via IntelliJ plugin", generateDescription("   ", "   "))
+        assertEquals("Auto-tracked via IntelliJ plugin", generateDescription(null, null, "MyProject"))
+        assertEquals("Auto-tracked via IntelliJ plugin", generateDescription("", "", "MyProject"))
+        assertEquals("Auto-tracked via IntelliJ plugin", generateDescription("   ", "   ", "MyProject"))
     }
 
     @Test
@@ -138,18 +130,12 @@ class SimpleClocklyticServiceTest {
 
     @Test
     fun testConfigurationValidation_NewFields() {
-        // Test validation for the new required fields
-        assertFalse("Should be invalid without user ID",
-            isValidConfiguration("test-key", null, 456L))
-
-        assertFalse("Should be invalid without project ID",
-            isValidConfiguration("test-key", 123L, null))
-
+        // Test validation for the required API key
         assertFalse("Should be invalid without API key",
-            isValidConfiguration("", 123L, 456L))
+            isValidConfiguration(""))
 
-        assertTrue("Should be valid with all required fields",
-            isValidConfiguration("test-key", 123L, 456L))
+        assertTrue("Should be valid with API key",
+            isValidConfiguration("test-key"))
     }
 
     @Test
@@ -172,16 +158,18 @@ class SimpleClocklyticServiceTest {
     @Test
     fun testDescriptionPriority() {
         // Test that JIRA ticket takes priority over branch name in descriptions
+        // When using branch name, it should be prefixed with project name
+        val projectName = "TestProject"
         val testCases = listOf(
             Triple("PROJ-123", "feature/PROJ-123-test", "PROJ-123"),
             Triple("ABC-456", "feature/different-branch", "ABC-456"),
-            Triple(null, "feature/no-ticket", "feature/no-ticket"),
-            Triple("", "feature/empty-ticket", "feature/empty-ticket"),
-            Triple("   ", "feature/blank-ticket", "feature/blank-ticket")
+            Triple(null, "feature/no-ticket", "${projectName}_feature/no-ticket"),
+            Triple("", "feature/empty-ticket", "${projectName}_feature/empty-ticket"),
+            Triple("   ", "feature/blank-ticket", "${projectName}_feature/blank-ticket")
         )
 
         testCases.forEach { (jiraTicket, branchName, expected) ->
-            val result = generateDescription(jiraTicket, branchName)
+            val result = generateDescription(jiraTicket, branchName, projectName)
             assertEquals("Priority test failed for JIRA='$jiraTicket', branch='$branchName'",
                 expected, result)
         }
@@ -206,16 +194,16 @@ class SimpleClocklyticServiceTest {
     }
 
     // Helper method for description generation logic
-    private fun generateDescription(jiraTicket: String?, branchName: String?): String {
+    private fun generateDescription(jiraTicket: String?, branchName: String?, projectName: String): String {
         return when {
             !jiraTicket.isNullOrBlank() -> jiraTicket
-            !branchName.isNullOrBlank() -> branchName
+            !branchName.isNullOrBlank() -> "${projectName}_$branchName"
             else -> "Auto-tracked via IntelliJ plugin"
         }
     }
 
     // Helper method for new configuration validation
-    private fun isValidConfiguration(apiKey: String, userId: Long?, projectId: Long?): Boolean {
-        return apiKey.isNotBlank() && userId != null && projectId != null
+    private fun isValidConfiguration(apiKey: String): Boolean {
+        return apiKey.isNotBlank()
     }
 }
