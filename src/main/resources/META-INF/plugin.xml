@@ -32,5 +32,8 @@
                                 displayName="Chrontic Time Tracker"/>
         <applicationService serviceImplementation="chrontic.chronticplugin.ChronticSettings"/>
         <projectService serviceImplementation="chrontic.chronticplugin.TimeTrackerDisposable"/>
+
+        <!-- Notification group for time tracking notifications -->
+        <notificationGroup id="Chrontic Time Tracker" displayType="BALLOON"/>
     </extensions>
 </idea-plugin>

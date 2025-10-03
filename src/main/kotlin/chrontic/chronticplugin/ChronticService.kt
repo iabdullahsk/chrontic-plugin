@@ -1,5 +1,7 @@
 package chrontic.chronticplugin
 
+import com.intellij.notification.NotificationGroupManager
+import com.intellij.notification.NotificationType
 import com.intellij.openapi.diagnostic.Logger
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -87,15 +89,46 @@ class ChronticService {
 
             if (response.statusCode() in 200..299) {
                 logger.info("Time entry created successfully. Duration: $durationMinutes minutes, Description: $description")
+
+                // Show notification to user
+                showNotification(
+                    "Time Entry Recorded",
+                    "Tracked $durationMinutes min for: $description",
+                    NotificationType.INFORMATION
+                )
+
                 return true
             } else {
                 logger.error("Failed to create time entry. Status: ${response.statusCode()}, Body: ${response.body()}")
+
+                // Show error notification
+                showNotification(
+                    "Time Entry Failed",
+                    "Failed to record time entry. Status: ${response.statusCode()}",
+                    NotificationType.ERROR
+                )
+
                 return false
             }
 
         } catch (e: Exception) {
             logger.error("Error creating time entry", e)
+
+            // Show error notification
+            showNotification(
+                "Time Entry Error",
+                "Error recording time entry: ${e.message}",
+                NotificationType.ERROR
+            )
+
             return false
         }
+    }
+
+    private fun showNotification(title: String, content: String, type: NotificationType) {
+        NotificationGroupManager.getInstance()
+            .getNotificationGroup("Chrontic Time Tracker")
+            .createNotification(title, content, type)
+            .notify(null)
     }
 }
