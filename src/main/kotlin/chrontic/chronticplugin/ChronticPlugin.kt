@@ -1,4 +1,4 @@
-package clocklytic.clocklyticplugin
+package chrontic.chronticplugin
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
@@ -11,13 +11,13 @@ import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 
-class ClocklyticPlugin : ProjectActivity {
-    private val logger = Logger.getInstance(ClocklyticPlugin::class.java)
+class ChronticPlugin : ProjectActivity {
+    private val logger = Logger.getInstance(ChronticPlugin::class.java)
 
     override suspend fun execute(project: Project) {
-        val settings = ClocklyticSettings.getInstance()
+        val settings = ChronticSettings.getInstance()
 
-        logger.info("=== Clocklytic Plugin Execute Called for project: ${project.name} ===")
+        logger.info("=== Chrontic Plugin Execute Called for project: ${project.name} ===")
         logger.info("Auto-tracking enabled: ${settings.enableAutoTracking}")
         logger.info("API Base URL: ${settings.apiBaseUrl}")
         logger.info("Tracking interval: ${settings.trackingIntervalMinutes} minutes")
@@ -27,27 +27,27 @@ class ClocklyticPlugin : ProjectActivity {
             return
         }
 
-        logger.info("Starting Clocklytic Plugin initialization...")
+        logger.info("Starting Chrontic Plugin initialization...")
 
         val gitService = GitService(project)
-        val clocklyticService = ClocklyticService()
+        val chronticService = ChronticService()
         val activityDetector = ActivityDetector(project)
-        val timeTracker = TimeTracker(gitService, clocklyticService, activityDetector, project.name)
+        val timeTracker = TimeTracker(gitService, chronticService, activityDetector, project.name)
 
         // Test git service immediately
         val currentTicket = gitService.getCurrentJiraTicket()
         logger.info("Initial JIRA ticket detection: $currentTicket")
 
         val executor = AppExecutorUtil.createBoundedScheduledExecutorService(
-            "Clocklytic Time Tracker", 1
+            "Chrontic Time Tracker", 1
         )
 
         // Start time tracking with configurable intervals
         val scheduledTask = executor.scheduleWithFixedDelay({
             try {
-                logger.info("=== Clocklytic Time Tracker - Scheduled execution ===")
+                logger.info("=== Chrontic Time Tracker - Scheduled execution ===")
                 timeTracker.trackTime()
-                logger.info("=== Clocklytic Time Tracker - Execution completed ===")
+                logger.info("=== Chrontic Time Tracker - Execution completed ===")
             } catch (e: Exception) {
                 logger.error("Error during time tracking", e)
             }
@@ -56,8 +56,8 @@ class ClocklyticPlugin : ProjectActivity {
         // Register disposal to cleanup resources when project is closed
         project.service<TimeTrackerDisposable>().setup(scheduledTask, executor)
 
-        logger.info("Clocklytic Plugin started successfully with ${settings.trackingIntervalMinutes} minute intervals")
-        logger.info("=== Clocklytic Plugin Initialization Complete ===")
+        logger.info("Chrontic Plugin started successfully with ${settings.trackingIntervalMinutes} minute intervals")
+        logger.info("=== Chrontic Plugin Initialization Complete ===")
     }
 }
 

@@ -1,4 +1,4 @@
-package clocklytic.clocklyticplugin
+package chrontic.chronticplugin
 
 import org.junit.Test
 import org.junit.Assert.*

@@ -6,7 +6,7 @@ plugins {
     `maven-publish`
 }
 
-group = "clocklytic"
+group = "chrontic"
 version = "1.0-SNAPSHOT"
 
 repositories {

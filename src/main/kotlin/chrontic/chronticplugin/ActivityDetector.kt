@@ -1,4 +1,4 @@
-package clocklytic.clocklyticplugin
+package chrontic.chronticplugin
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.diagnostic.Logger

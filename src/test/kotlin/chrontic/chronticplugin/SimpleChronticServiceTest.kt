@@ -1,9 +1,9 @@
-package clocklytic.clocklyticplugin
+package chrontic.chronticplugin
 
 import org.junit.Test
 import org.junit.Assert.*
 
-class SimpleClocklyticServiceTest {
+class SimpleChronticServiceTest {
 
     @Test
     fun testTimeEntryRequestCreation() {
@@ -29,7 +29,7 @@ class SimpleClocklyticServiceTest {
         val testCases = mapOf(
             "http://localhost:8080" to "http://localhost:8080/api/time-entries",
             "http://localhost:8080/" to "http://localhost:8080/api/time-entries",
-            "https://api.clocklytic.com" to "https://api.clocklytic.com/api/time-entries"
+            "https://api.chrontic.com" to "https://api.chrontic.com/api/time-entries"
         )
 
         testCases.forEach { (baseUrl, expectedUrl) ->
@@ -106,9 +106,9 @@ class SimpleClocklyticServiceTest {
     @Test
     fun testDescriptionGeneration_EmptyValues() {
         // Test description with empty/null values
-        assertEquals("Auto-tracked via IntelliJ plugin", generateDescription(null, null, "MyProject"))
-        assertEquals("Auto-tracked via IntelliJ plugin", generateDescription("", "", "MyProject"))
-        assertEquals("Auto-tracked via IntelliJ plugin", generateDescription("   ", "   ", "MyProject"))
+        assertEquals("Auto-tracked via IntelliJ plugin: branch name could not be determined", generateDescription(null, null, "MyProject"))
+        assertEquals("Auto-tracked via IntelliJ plugin: branch name could not be determined", generateDescription("", "", "MyProject"))
+        assertEquals("Auto-tracked via IntelliJ plugin: branch name could not be determined", generateDescription("   ", "   ", "MyProject"))
     }
 
     @Test
@@ -198,7 +198,7 @@ class SimpleClocklyticServiceTest {
         return when {
             !jiraTicket.isNullOrBlank() -> jiraTicket
             !branchName.isNullOrBlank() -> "${projectName}_$branchName"
-            else -> "Auto-tracked via IntelliJ plugin"
+            else -> "Auto-tracked via IntelliJ plugin: branch name could not be determined"
         }
     }
 

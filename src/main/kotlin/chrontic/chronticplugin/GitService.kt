@@ -1,4 +1,4 @@
-package clocklytic.clocklyticplugin
+package chrontic.chronticplugin
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.diagnostic.Logger
@@ -12,7 +12,7 @@ import java.io.File
 
 class GitService(private val project: Project) {
     private val logger = Logger.getInstance(GitService::class.java)
-    private val settings = ClocklyticSettings.getInstance()
+    private val settings = ChronticSettings.getInstance()
 
     // Use configurable JIRA ticket pattern
     private val jiraPattern: Pattern

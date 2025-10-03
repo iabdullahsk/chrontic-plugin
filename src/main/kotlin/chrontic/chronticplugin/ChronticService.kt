@@ -1,4 +1,4 @@
-package clocklytic.clocklyticplugin
+package chrontic.chronticplugin
 
 import com.intellij.openapi.diagnostic.Logger
 import kotlinx.serialization.Serializable
@@ -35,9 +35,9 @@ object LocalDateTimeSerializer : kotlinx.serialization.KSerializer<LocalDateTime
     }
 }
 
-class ClocklyticService {
-    private val logger = Logger.getInstance(ClocklyticService::class.java)
-    private val settings = ClocklyticSettings.getInstance()
+class ChronticService {
+    private val logger = Logger.getInstance(ChronticService::class.java)
+    private val settings = ChronticSettings.getInstance()
     private val httpClient = HttpClient.newBuilder()
         .connectTimeout(Duration.ofSeconds(30))
         .build()

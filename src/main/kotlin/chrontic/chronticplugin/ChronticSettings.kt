@@ -1,4 +1,4 @@
-package clocklytic.clocklyticplugin
+package chrontic.chronticplugin
 
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.PersistentStateComponent
@@ -8,11 +8,11 @@ import com.intellij.openapi.components.Storage
 import com.intellij.util.xmlb.XmlSerializerUtil
 
 @State(
-    name = "ClocklyticSettings",
-    storages = [Storage("clocklytic-plugin.xml")]
+    name = "ChronticSettings",
+    storages = [Storage("chrontic-plugin.xml")]
 )
 @Service
-class ClocklyticSettings : PersistentStateComponent<ClocklyticSettings> {
+class ChronticSettings : PersistentStateComponent<ChronticSettings> {
 
     var apiBaseUrl: String = "http://localhost:8086"
     var apiKey: String = ""
@@ -21,15 +21,15 @@ class ClocklyticSettings : PersistentStateComponent<ClocklyticSettings> {
     var enableAutoTracking: Boolean = true
     var jiraTicketRegex: String = "([A-Z]{2,10}-\\d+)"
 
-    override fun getState(): ClocklyticSettings = this
+    override fun getState(): ChronticSettings = this
 
-    override fun loadState(state: ClocklyticSettings) {
+    override fun loadState(state: ChronticSettings) {
         XmlSerializerUtil.copyBean(state, this)
     }
 
     companion object {
-        fun getInstance(): ClocklyticSettings {
-            return ApplicationManager.getApplication().getService(ClocklyticSettings::class.java)
+        fun getInstance(): ChronticSettings {
+            return ApplicationManager.getApplication().getService(ChronticSettings::class.java)
         }
     }
 }

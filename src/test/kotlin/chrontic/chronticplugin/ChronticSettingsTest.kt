@@ -1,16 +1,16 @@
-package clocklytic.clocklyticplugin
+package chrontic.chronticplugin
 
 import org.junit.Before
 import org.junit.Test
 import org.junit.Assert.*
 
-class ClocklyticSettingsTest {
+class ChronticSettingsTest {
 
-    private lateinit var settings: ClocklyticSettings
+    private lateinit var settings: ChronticSettings
 
     @Before
     fun setUp() {
-        settings = ClocklyticSettings()
+        settings = ChronticSettings()
     }
 
     @Test
@@ -29,8 +29,8 @@ class ClocklyticSettingsTest {
     @Test
     fun testSettingsModification() {
         // Test API base URL
-        settings.apiBaseUrl = "https://api.clocklytic.com"
-        assertEquals("https://api.clocklytic.com", settings.apiBaseUrl)
+        settings.apiBaseUrl = "https://api.chrontic.com"
+        assertEquals("https://api.chrontic.com", settings.apiBaseUrl)
 
         // Test API key
         settings.apiKey = "test-api-key-123"
@@ -64,9 +64,9 @@ class ClocklyticSettingsTest {
     fun testApiUrlValidation() {
         val validUrls = listOf(
             "http://localhost:8080",
-            "https://api.clocklytic.com",
+            "https://api.chrontic.com",
             "http://192.168.1.100:3000",
-            "https://clocklytic.example.com/api"
+            "https://chrontic.example.com/api"
         )
 
         validUrls.forEach { url ->
@@ -99,7 +99,7 @@ class ClocklyticSettingsTest {
     @Test
     fun testSettingsStatePersistence() {
         // Simulate state save/load
-        val originalSettings = ClocklyticSettings().apply {
+        val originalSettings = ChronticSettings().apply {
             apiBaseUrl = "https://custom.api.com"
             apiKey = "custom-key"
             trackingIntervalMinutes = 45
@@ -107,7 +107,7 @@ class ClocklyticSettingsTest {
             jiraTicketRegex = "(CUSTOM-\\d+)"
         }
 
-        val newSettings = ClocklyticSettings().apply {
+        val newSettings = ChronticSettings().apply {
             apiBaseUrl = originalSettings.apiBaseUrl
             apiKey = originalSettings.apiKey
             trackingIntervalMinutes = originalSettings.trackingIntervalMinutes

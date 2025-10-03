@@ -5,4 +5,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = "clocklytic-plugin"
+rootProject.name = "chrontic-plugin"

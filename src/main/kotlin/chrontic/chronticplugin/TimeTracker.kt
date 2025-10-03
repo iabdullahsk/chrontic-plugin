@@ -1,4 +1,4 @@
-package clocklytic.clocklyticplugin
+package chrontic.chronticplugin
 
 import com.intellij.openapi.diagnostic.Logger
 import java.time.LocalDateTime
@@ -6,7 +6,7 @@ import java.time.temporal.ChronoUnit
 
 class TimeTracker(
     private val gitService: GitService,
-    private val clocklyticService: ClocklyticService,
+    private val chronticService: ChronticService,
     private val activityDetector: ActivityDetector,
     private val projectName: String
 ) {
@@ -48,7 +48,7 @@ class TimeTracker(
         if (durationMinutes >= 1) { // Only track if at least 1 minute has passed
             logger.info("Attempting to track $durationMinutes minutes for: $trackingKey (Last activity: ${activityDetector.getMinutesSinceLastActivity()} minutes ago)")
 
-            val success = clocklyticService.createTimeEntry(currentJiraTicket, currentBranchName, projectName, durationMinutes.toInt())
+            val success = chronticService.createTimeEntry(currentJiraTicket, currentBranchName, projectName, durationMinutes.toInt())
 
             if (success) {
                 lastTrackingTime = currentTime
